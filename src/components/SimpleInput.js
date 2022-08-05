@@ -5,14 +5,20 @@ const SimpleInput = (props) => {
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
   // const [formIsVaild, setFormIsVaild] = useState(false); 얘를 state로 사용하지 않고 그냥 불리언 값으로 사용한다
 
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
+
   const enteredNameValid = enteredName.trim() !== "";
   const nameInputIsValid = !enteredNameValid && enteredNameTouched;
   // 네임벨리드가 false면 네임터치드가 true일 때 이 상상수의 값을 true로 만듬.
 
+  const enteredEmailVaild = enteredEmail.includes("@");
+  const emailInputIsValid = !enteredEmailVaild && enteredEmailTouched;
+
   let formIsValid = false;
 
   // useEffect(() => {
-  if (enteredNameValid) {
+  if (enteredNameValid && enteredEmail) {
     // 여기에 다른 Vaild상태를 전부 곱연산자로 체크함
     formIsValid = true;
     // 모든 인풋이 유효한 상태일 때, formIsValid를 true로 세팅함.
@@ -24,9 +30,15 @@ const SimpleInput = (props) => {
   const nameInputChangeHandler = (e) => {
     setEnteredName(e.target.value);
   };
+  const emailInputChangeHandler = (e) => {
+    setEnteredEmail(e.target.value);
+  };
 
   const nameBlurHandler = (e) => {
     setEnteredNameTouched(true);
+  };
+  const emailBlurHandler = (e) => {
+    setEnteredEmailTouched(true);
   };
 
   const submitHanlder = (e) => {
@@ -39,6 +51,7 @@ const SimpleInput = (props) => {
     }
 
     setEnteredName("");
+    setEnteredEmail("");
     setEnteredNameTouched(false);
     console.log(enteredName);
     // setEnteredName(inputRef.current.value);
@@ -51,6 +64,10 @@ const SimpleInput = (props) => {
   };
 
   const nameInputClass = nameInputIsValid
+    ? "form-control invalid"
+    : "form-control";
+
+  const emailInputClass = emailInputIsValid
     ? "form-control invalid"
     : "form-control";
 
@@ -67,6 +84,20 @@ const SimpleInput = (props) => {
           onBlur={nameBlurHandler}
         />
         {nameInputIsValid && (
+          <p className="error-text">입력한 값이 유효하지 않아요</p>
+        )}
+      </div>
+      <div className={emailInputClass}>
+        <label htmlFor="name">Your Email</label>
+        <input
+          type="text"
+          id="email"
+          minLength={5}
+          value={enteredEmail}
+          onChange={emailInputChangeHandler}
+          onBlur={emailBlurHandler}
+        />
+        {emailInputIsValid && (
           <p className="error-text">입력한 값이 유효하지 않아요</p>
         )}
       </div>
