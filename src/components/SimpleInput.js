@@ -3,10 +3,23 @@ import { useState } from "react";
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+  // const [formIsVaild, setFormIsVaild] = useState(false); 얘를 state로 사용하지 않고 그냥 불리언 값으로 사용한다
 
   const enteredNameValid = enteredName.trim() !== "";
   const nameInputIsValid = !enteredNameValid && enteredNameTouched;
-  // 네임벨리드가 false면 네임터치드를 true로 만듬
+  // 네임벨리드가 false면 네임터치드가 true일 때 이 상상수의 값을 true로 만듬.
+
+  let formIsValid = false;
+
+  // useEffect(() => {
+  if (enteredNameValid) {
+    // 여기에 다른 Vaild상태를 전부 곱연산자로 체크함
+    formIsValid = true;
+    // 모든 인풋이 유효한 상태일 때, formIsValid를 true로 세팅함.
+  }
+  // else {formIsValid = false;} 있어도 그만 없어도 그만임
+  // }, [enteredNameValid]);
+  // useEffect를 사용해도 되지만 없어도 됨 = 결과적으로 낭비
 
   const nameInputChangeHandler = (e) => {
     setEnteredName(e.target.value);
@@ -27,7 +40,7 @@ const SimpleInput = (props) => {
 
     setEnteredName("");
     setEnteredNameTouched(false);
-
+    console.log(enteredName);
     // setEnteredName(inputRef.current.value);
     // console.log(enteredName);
     // 키를 입력할 떄 마다(enteredName이 set될 때 마다) 피드백을 보내고 싶을 땐 state를 사용하고
@@ -48,6 +61,7 @@ const SimpleInput = (props) => {
         <input
           type="text"
           id="name"
+          minLength={5}
           value={enteredName}
           onChange={nameInputChangeHandler}
           onBlur={nameBlurHandler}
@@ -57,7 +71,10 @@ const SimpleInput = (props) => {
         )}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid} onClick={() => console.log("클릭!")}>
+          {/* 온클릭 이벤트는 disabled가 제대로 작동되는지 확인하기위해 잠깐 써놓음 */}
+          Submit
+        </button>
       </div>
     </form>
   );
