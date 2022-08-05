@@ -9,23 +9,22 @@ const SimpleInput = (props) => {
   const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
 
   const enteredNameValid = enteredName.trim() !== "";
-  const nameInputIsValid = !enteredNameValid && enteredNameTouched;
-  // 네임벨리드가 false면 네임터치드가 true일 때 이 상상수의 값을 true로 만듬.
+  // name인풋의 입력된 value가 있을 때, true
+  const nameInputIsInValid = !enteredNameValid && enteredNameTouched;
+  // name인풋에 입력된 값이 없으며 네임터치드가 true일 때(해당 인풋이 blur상태가 되었을 때) 입력한 값이 유효하지 않아요를 출력하기 위해 만들었음.
 
   const enteredEmailVaild = enteredEmail.includes("@");
-  const emailInputIsValid = !enteredEmailVaild && enteredEmailTouched;
+  const emailInputIsInValid = !enteredEmailVaild && enteredEmailTouched;
 
   let formIsValid = false;
+  // 이 값에 따라 버튼의 disabled값이 변함.
 
-  // useEffect(() => {
-  if (enteredNameValid && enteredEmail) {
+  if (enteredNameValid && enteredEmailVaild) {
     // 여기에 다른 Vaild상태를 전부 곱연산자로 체크함
     formIsValid = true;
     // 모든 인풋이 유효한 상태일 때, formIsValid를 true로 세팅함.
   }
-  // else {formIsValid = false;} 있어도 그만 없어도 그만임
-  // }, [enteredNameValid]);
-  // useEffect를 사용해도 되지만 없어도 됨 = 결과적으로 낭비
+  // else {formIsValid = false;} state가 아니라 그냥 값으로 사용하고 있기 때문에 없어도 됨
 
   const nameInputChangeHandler = (e) => {
     setEnteredName(e.target.value);
@@ -33,6 +32,7 @@ const SimpleInput = (props) => {
   const emailInputChangeHandler = (e) => {
     setEnteredEmail(e.target.value);
   };
+  // input이 받은 target.value를 각값의 상태로 만듬
 
   const nameBlurHandler = (e) => {
     setEnteredNameTouched(true);
@@ -40,20 +40,21 @@ const SimpleInput = (props) => {
   const emailBlurHandler = (e) => {
     setEnteredEmailTouched(true);
   };
+  // blur되었을 때 상태에 변화를 주기 위함
 
   const submitHanlder = (e) => {
     e.preventDefault();
-
-    setEnteredNameTouched(true);
-
-    if (!enteredNameValid) {
-      return;
-    }
+    // setEnteredNameTouched(true);
+    // if (!enteredNameValid) {
+    //   return;
+    // }
+    // 버튼의 disabled를 제어하고 있기 때문에 필요 없다.
 
     setEnteredName("");
     setEnteredEmail("");
     setEnteredNameTouched(false);
-    console.log(enteredName);
+    setEnteredEmailTouched(false);
+    console.log(`name ${enteredName} , email ${enteredEmail}`);
     // setEnteredName(inputRef.current.value);
     // console.log(enteredName);
     // 키를 입력할 떄 마다(enteredName이 set될 때 마다) 피드백을 보내고 싶을 땐 state를 사용하고
@@ -63,11 +64,11 @@ const SimpleInput = (props) => {
     // 서브밋 후 입력창이 초기화 되는 것을 원한다면 state를 사용하는 게 더 좋은 선택이다.
   };
 
-  const nameInputClass = nameInputIsValid
+  const nameInputClass = nameInputIsInValid
     ? "form-control invalid"
     : "form-control";
 
-  const emailInputClass = emailInputIsValid
+  const emailInputClass = emailInputIsInValid
     ? "form-control invalid"
     : "form-control";
 
@@ -83,12 +84,12 @@ const SimpleInput = (props) => {
           onChange={nameInputChangeHandler}
           onBlur={nameBlurHandler}
         />
-        {nameInputIsValid && (
+        {nameInputIsInValid && (
           <p className="error-text">입력한 값이 유효하지 않아요</p>
         )}
       </div>
       <div className={emailInputClass}>
-        <label htmlFor="name">Your Email</label>
+        <label htmlFor="email">Your Email</label>
         <input
           type="text"
           id="email"
@@ -97,15 +98,12 @@ const SimpleInput = (props) => {
           onChange={emailInputChangeHandler}
           onBlur={emailBlurHandler}
         />
-        {emailInputIsValid && (
+        {emailInputIsInValid && (
           <p className="error-text">입력한 값이 유효하지 않아요</p>
         )}
       </div>
       <div className="form-actions">
-        <button disabled={!formIsValid} onClick={() => console.log("클릭!")}>
-          {/* 온클릭 이벤트는 disabled가 제대로 작동되는지 확인하기위해 잠깐 써놓음 */}
-          Submit
-        </button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
